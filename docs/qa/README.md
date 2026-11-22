@@ -1,3 +1,5 @@
+Atualização t254 (só o botão, sem rodapé, sem ↗ da ponte, sem confirmação): ver [t254/README.md](t254/README.md) e o [vídeo novo](t254/qa-t254.mp4).
+
 # QA visual: pseudo-botões `[ Título ]` no Beeper
 
 O Beeper não tem UI de botão. A ponte passa a renderizar cada CTA (quick reply, postback e link) como um pseudo-botão, um por linha:
