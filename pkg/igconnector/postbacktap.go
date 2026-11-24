@@ -18,6 +18,7 @@ package igconnector
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -94,8 +95,12 @@ func selectPostbackForText(
 	return button
 }
 
+var errTextReplyTapsOff = bridgev2.WrapErrorInStatus(errors.New("text replies don't tap buttons; vote in the poll or send !ig tap N")).
+	WithIsCertain(true).WithErrorAsMessage().WithErrorReason(event.MessageStatusUnsupported).WithSendNotice(true)
+
 // handleMatrixPostbackTap sends a postback instead of a text message if the user's message
-// is a reply to, or the title of, a card button. The handled return value is true if the
+// is a reply to, or the title of, a card button and text_reply_taps is enabled. If it is
+// disabled, such a message fails and nothing is sent. The handled return value is true if the
 // message must not be sent to Instagram as text.
 func (ic *IGClient) handleMatrixPostbackTap(ctx context.Context, msg *bridgev2.MatrixMessage) (*bridgev2.MatrixMessageResponse, bool, error) {
 	if msg.OrigSender != nil || msg.Content == nil {
@@ -111,6 +116,10 @@ func (ic *IGClient) handleMatrixPostbackTap(ctx context.Context, msg *bridgev2.M
 	}, msg.Content.Body)
 	if button == nil {
 		return nil, false, nil
+	}
+	if !ic.Main.Config.TextReplyTaps {
+		zerolog.Ctx(ctx).Warn().Bool("quick_reply", button.IsQuickReply()).Msg("Blocked text message that matched a button")
+		return nil, true, errTextReplyTapsOff
 	}
 	portalMeta, err := ic.ensureIGID(ctx, msg.Portal)
 	if err != nil {

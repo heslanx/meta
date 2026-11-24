@@ -33,6 +33,7 @@ type Config struct {
 	TapListen        string `yaml:"tap_listen"`
 	TapPublicAddress string `yaml:"tap_public_address"`
 	TapHMACSecret    string `yaml:"tap_hmac_secret"`
+	TextReplyTaps    bool   `yaml:"text_reply_taps"`
 
 	Proxy        string `yaml:"proxy"`
 	GetProxyFrom string `yaml:"get_proxy_from"`
@@ -86,6 +87,7 @@ func upgradeConfig(helper up.Helper) {
 	helper.Copy(up.Str, "tap_listen")
 	helper.Copy(up.Str, "tap_public_address")
 	helper.Copy(up.Str|up.Null, "tap_hmac_secret")
+	helper.Copy(up.Bool, "text_reply_taps")
 	helper.Copy(up.Str, "displayname_template")
 	helper.Copy(up.Str|up.Null, "proxy")
 	helper.Copy(up.Str|up.Null, "get_proxy_from")

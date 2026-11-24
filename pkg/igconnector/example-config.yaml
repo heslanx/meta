@@ -43,6 +43,8 @@ tap_hmac_secret:
 # Tap links do not expire. Anyone with a link can send its button, repeatedly.
 # GET requests send immediately, including requests from link-preview services.
 # Do not log tap request URLs at the reverse proxy.
+# If true, a text reply with a button number or title sends that button to Instagram. Off by default: use the poll or !ig tap.
+text_reply_taps: false
 
 # Thread backfill settings for syncing older conversations
 thread_backfill:
